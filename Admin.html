@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quick App Store Admin Panel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+    }
+    header {
+      background: #333;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+    }
+    .container {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    .container h2 {
+      margin-bottom: 1rem;
+    }
+    .input-group {
+      margin-bottom: 1rem;
+    }
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .btn {
+      display: inline-block;
+      background: #2196f3;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn-secondary {
+      background: #4CAF50;
+      margin-left: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Admin Panel - Quick App Store</h1>
+  </header>
+
+  <div class="container">
+    <h2>Add New App</h2>
+    <div class="input-group">
+      <label for="appName">App Name</label>
+      <input type="text" id="appName" placeholder="Enter app name" />
+    </div>
+    <div class="input-group">
+      <label for="appImage">App Image URL</label>
+      <input type="text" id="appImage" placeholder="Enter image URL (only link supported)" />
+    </div>
+    <div class="input-group">
+      <label for="appVersion">App Version</label>
+      <input type="text" id="appVersion" placeholder="Enter app version" />
+    </div>
+    <div class="input-group">
+      <label for="apkLink">APK Download Link</label>
+      <input type="text" id="apkLink" placeholder="Enter APK link (only link supported)" />
+    </div>
+    <button class="btn" onclick="saveApp()">Save App</button>
+    <button class="btn btn-secondary" onclick="goToAppList()">App List</button>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Your Firebase config here
+    const firebaseConfig = {
+      apiKey: "AIzaSyBeZoxEg_j6gZ5t91d94HI6esWvDH3k1C4",
+      authDomain: "quick-bbc2a.firebaseapp.com",
+      projectId: "quick-bbc2a",
+      storageBucket: "quick-bbc2a.firebasestorage.app",
+      messagingSenderId: "89003779488",
+      appId: "1:89003779488:web:467559072c050536f9f0c5"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function saveApp() {
+      const appName = document.getElementById('appName').value.trim();
+      const appImage = document.getElementById('appImage').value.trim();
+      const appVersion = document.getElementById('appVersion').value.trim();
+      const apkLink = document.getElementById('apkLink').value.trim();
+
+      if (!appName || !appImage || !appVersion || !apkLink) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const app = {
+        name: appName,
+        icon: appImage,
+        version: appVersion,
+        apkUrl: apkLink,
+        screenshots: []
+      };
+
+      db.collection("apps").add(app)
+        .then(() => {
+          alert("App saved successfully!");
+          // Clear form fields
+          document.getElementById('appName').value = '';
+          document.getElementById('appImage').value = '';
+          document.getElementById('appVersion').value = '';
+          document.getElementById('apkLink').value = '';
+        })
+        .catch(error => {
+          console.error("Error adding app: ", error);
+          alert("Failed to save app.");
+        });
+    }
+
+    function goToAppList() {
+      window.location.href = 'applist.html';
+    }
+  </script>
+</body>
+</html>
